@@ -3,9 +3,9 @@ const app = express()
 const port = 3000
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello, Express.js Server!</h1>')
+  res.send('<h1>Hello from Library!</h1>')
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`App listening on port ${port}`)
 })
