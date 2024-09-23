@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
-const {loginfn, signupfn} = require("../controllers/auth")
+const {clientloginfn, adminloginfn, signupfn} = require("../controllers/auth")
 
-router.route("/login").get(loginfn);
-router.route("/signut").get(signupfn);
+router.route("/clientlogin").get(clientloginfn);
+router.route("/adminlogin").get(adminloginfn);
+router.route("/signup").get(signupfn);
 
 module.exports = router;

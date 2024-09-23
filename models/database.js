@@ -1,10 +1,10 @@
 const mysql = require('mysql')
-
+require('dotenv').config();
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'lms'
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE
 })
 
 // pool.query("CREATE TABLE books (book_id int AUTO_INCREMENT, book_name VARCHAR(255), author VARCHAR(255), field_of_study VARCHAR(255), pages int, PRIMARY KEY(book_id))", function (err, result){

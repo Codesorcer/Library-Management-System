@@ -1,9 +1,13 @@
-const loginfn = async(req, res) => {
-    res.status(200).json({message : "Login"});
+const clientloginfn = async(req, res) => {
+    res.status(200).json({msg : "Client Login"});
+}
+
+const adminloginfn = async(req, res) => {
+    res.status(200).json({msg : "Admin Login"});
 }
 
 const signupfn = async(req, res) => {
-    res.status(200).json({message : "SignUp"});
+    res.status(200).json({msg : "SignUp"});
 }
 
-module.exports = {loginfn, signupfn};
+module.exports = {clientloginfn, adminloginfn, signupfn};
