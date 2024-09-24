@@ -63,36 +63,38 @@ const pool = mysql.createPool({
 // });
 
 // Create the users table
-pool.query(`
-    CREATE TABLE users (
-        user_id INT AUTO_INCREMENT,
-        name VARCHAR(255),
-        email VARCHAR(100),
-        password VARCHAR(250),
-        mobile INT(10),
-        address VARCHAR(255),
-        user_type VARCHAR(50),
-        PRIMARY KEY(user_id)
-    )
-`, function (err, result) {
-    if (err) throw err;
-    console.log("Users Table Created");
+// pool.query(`
+//     CREATE TABLE users (
+//         user_id INT AUTO_INCREMENT,
+//         name VARCHAR(255),
+//         email VARCHAR(100),
+//         password VARCHAR(250),
+//         mobile INT(10),
+//         address VARCHAR(255),
+//         user_type VARCHAR(50),
+//         PRIMARY KEY(user_id)
+//     )
+// `, function (err, result) {
+//     if (err) throw err;
+//     console.log("Users Table Created");
 
-    // Insert data from clients table into users table
-    pool.query(`
-        INSERT INTO users (name, email, password, mobile, address, user_type)
-        SELECT name, email, password, mobile, address, 'client' FROM clients
-    `, function (err, result) {
-        if (err) throw err;
-        console.log("Clients data inserted into Users Table");
+//     // Insert data from clients table into users table
+//     pool.query(`
+//         INSERT INTO users (name, email, password, mobile, address, user_type)
+//         SELECT name, email, password, mobile, address, 'client' FROM clients
+//     `, function (err, result) {
+//         if (err) throw err;
+//         console.log("Clients data inserted into Users Table");
 
-        // Insert data from admins table into users table
-        pool.query(`
-            INSERT INTO users (name, email, password, mobile, address, user_type)
-            SELECT name, email, password, mobile, address, 'admin' FROM admins
-        `, function (err, result) {
-            if (err) throw err;
-            console.log("Admins data inserted into Users Table");
-        });
-    });
-});
+//         // Insert data from admins table into users table
+//         pool.query(`
+//             INSERT INTO users (name, email, password, mobile, address, user_type)
+//             SELECT name, email, password, mobile, address, 'admin' FROM admins
+//         `, function (err, result) {
+//             if (err) throw err;
+//             console.log("Admins data inserted into Users Table");
+//         });
+//     });
+// });
+
+module.exports = pool;
