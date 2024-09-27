@@ -90,7 +90,7 @@ const signupfn = async (req, res) => {
                 );
 
                 // store the token in the database
-                pool.query('UPDATE users SET token = ? WHERE id = ?', [token, userID], (err, result) => {
+                pool.query('UPDATE users SET token = ? WHERE user_id = ?', [token, userID], (err, result) => {
                     if (err) {
                         console.log(err);
                         return res.status(500).send('Error storing token');
