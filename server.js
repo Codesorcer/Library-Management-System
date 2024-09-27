@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const auth_routes = require('./routes/auth');
+const cookieParser = require('cookie-parser');
 
 dotenv.config({ path: './.env' });
 
@@ -15,6 +16,8 @@ app.get('/', (req, res) => {
 app.use(express.urlencoded({ extended: false }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
+
+app.use(cookieParser())
 
 app.use('/auth', auth_routes);
 

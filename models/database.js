@@ -97,4 +97,11 @@ const pool = mysql.createPool({
 //     });
 // });
 
+// pool.query("ALTER TABLE users ADD COLUMN token VARCHAR(255)", function (err,result){
+//     if (err) throw err;
+//     console.log("token column added to users");
+// });
+
+
+
 module.exports = pool;
