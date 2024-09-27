@@ -17,29 +17,36 @@ const clientloginfn = async (req, res) => {
         // find user in DB
         const user = await findUserByEmail(email);
         // match the password
-        if(user && (await bcrypt.compare(password, user.passwor))){
+        if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
-                {id: user.id},
+                { id: user.user_id },
                 process.env.JWT_SECRET,
                 {
-                    expiresIn : "2h"
+                    expiresIn: "2h"
                 }
-            )
-            user.token = token
-            user.passwor = undefined 
+            );
+
+            user.token = token;
+            user.password = undefined;
+
+            // send a token
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+                httpOnly: true
+            };
+
+            return res.status(200).cookie("token", token, options).json({
+                success: true,
+                token,
+                user
+            });
+        } 
+        else {
+            return res.status(401).send('Invalid email or password');
         }
-        // send a token
-        const options = {
-            expires: new Data(Date.now() + 3 * 24 * 60 * 1000),
-            httpOnly: true
-        }
-        res.status(200).cookie("token", token, options).json({
-            success: true,
-            token,
-            user
-        })
     } catch(error){
         console.log(error);
+        return res.status(500).send('Internal server error');
     }
 };
 
