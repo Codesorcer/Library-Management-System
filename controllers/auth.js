@@ -1,5 +1,5 @@
 const pool = require('../models/database');
-const { findUserByEmail } = require('../service/database');
+const { findUserByEmail , findAdminByEmail} = require('../service/database');
 const express = require('express');
 require('dotenv').config
 const bcrypt = require('bcryptjs')
@@ -7,12 +7,12 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser')
 
 const clientloginfn = async (req, res) => {
-    try{
+    try {
         // get all data from frontend
-        const {email, password} = req.body
+        const { email, password } = req.body;
         // validation
-        if(!(email && password)){
-            res.status(400).send('send all data')
+        if (!(email && password)) {
+            return res.status(400).send('send all data');
         }
         // find user in DB
         const user = await findUserByEmail(email);
@@ -26,32 +26,86 @@ const clientloginfn = async (req, res) => {
                 }
             );
 
-            user.token = token;
-            user.password = undefined;
+            // Update the token in the database
+            pool.query('UPDATE users SET token = ? WHERE user_id = ?', [token, user.user_id], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send('Error updating token');
+                }
 
-            // send a token
-            const options = {
-                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
-                httpOnly: true
-            };
+                user.token = token;
+                user.password = undefined;
 
-            return res.status(200).cookie("token", token, options).json({
-                success: true,
-                token,
-                user
+                // send a token
+                const options = {
+                    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+                    httpOnly: true
+                };
+
+                return res.status(200).cookie("token", token, options).json({
+                    success: true,
+                    token,
+                    user
+                });
             });
-        } 
-        else {
+        } else {
             return res.status(401).send('Invalid email or password');
         }
-    } catch(error){
+    } catch (error) {
         console.log(error);
         return res.status(500).send('Internal server error');
     }
 };
 
 const adminloginfn = async (req, res) => {
-    res.status(200).json({ msg: 'Admin Login' });
+    try {
+        // get all data from frontend
+        const { email, password } = req.body;
+        // validation
+        if (!(email && password)) {
+            return res.status(400).send('send all data');
+        }
+        // find user in DB
+        const admin = await findAdminByEmail(email);
+        // match the password
+        if (admin && (await bcrypt.compare(password, admin.password))) {
+            const token = jwt.sign(
+                { id: admin.admin_id },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "2h"
+                }
+            );
+
+            // Update the token in the database
+            pool.query('UPDATE admins SET token = ? WHERE admin_id = ?', [token, admin.admin_id], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send('Error updating token');
+                }
+
+                admin.token = token;
+                admin.password = undefined;
+
+                // send a token
+                const options = {
+                    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+                    httpOnly: true
+                };
+
+                return res.status(200).cookie("token", token, options).json({
+                    success: true,
+                    token,
+                    admin
+                });
+            });
+        } else {
+            return res.status(401).send('Invalid email or password');
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send('Internal server error');
+    }
 };
 
 const signupfn = async (req, res) => {

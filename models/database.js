@@ -103,5 +103,43 @@ const pool = mysql.createPool({
 // });
 
 
+// pool.query('SELECT * FROM users WHERE email = ?', ["aintahii@example.com"], (err, results) => {
+//     if (err) {
+//         console.log(err);
+//         return res.status(500).send('Error fetching user data');
+//     }
+//     if (results.length === 0) {
+//         return res.status(404).send('User not found');
+//     }
+
+//     const user = results[0];
+//     const { name, email, password, mobile, address } = user;
+
+//     // Step 2: Insert the fetched user data into the admin table
+//     pool.query('INSERT INTO admins (name, email, password, mobile, address) VALUES (?, ?, ?, ?, ?)', [name, email, password, mobile, address], (err, result) => {
+//         if (err) {
+//             console.log(err);
+//             return res.status(500).send('Error inserting user into admin table');
+//         }
+
+//         // Step 3: Update the user_type of the user in the users table to admin
+//         pool.query('UPDATE users SET user_type = ? WHERE email = ?', ['admin', email], (err, result) => {
+//             if (err) {
+//                 console.log(err);
+//                 return res.status(500).send('Error updating user type');
+//             }
+
+//             res.status(200).send('User promoted to admin successfully');
+//         });
+//     });
+// });
+
+// pool.query('ALTER TABLE admins ADD COLUMN token VARCHAR(255)', (err, result) => {
+//     if (err) {
+//         console.log(err);
+//         return res.status(500).send('Error adding token column to admins table');
+//     }
+//     res.status(200).send('Token column added to admins table successfully');
+// });
 
 module.exports = pool;
