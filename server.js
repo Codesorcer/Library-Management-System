@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const auth_routes = require('./routes/auth');
-const pages_routes = require('./routes/pages')
+const pages_routes = require('./routes/auth_pages')
 const cookieParser = require('cookie-parser');
 
 dotenv.config({ path: './.env' });
@@ -19,6 +19,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(cookieParser())
+
+app.use((req, res, next) => {
+  console.log("HTTP Method - " + req.method + " , URL - " + req.url);
+  next();
+})
 
 app.use('/auth', auth_routes);
 app.use('/auth', pages_routes);
