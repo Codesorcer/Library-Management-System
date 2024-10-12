@@ -3,8 +3,8 @@ const router = express.Router();
 
 const { clientloginfn, adminloginfn, signupfn } = require('../controllers/auth');
 
-router.route('/clientlogin').post(clientloginfn);
-router.route('/adminlogin').post(adminloginfn);
-router.route('/signup').post(signupfn);
+router.post("/clientlogin", clientloginfn);
+router.post("/adminlogin", adminloginfn);
+router.post("/signup", signupfn);
 
 module.exports = router;

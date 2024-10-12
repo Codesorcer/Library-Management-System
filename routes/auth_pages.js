@@ -3,8 +3,8 @@ const router = express.Router();
 
 const {clientloginpage, adminloginpage, signuppage} = require('../controllers/auth_pages');
 
-router.route('/clientlogin').get(clientloginpage);
-router.route('/adminlogin').get(adminloginpage);
-router.route('/signup').get(signuppage);
+router.get("/clientlogin", clientloginpage);
+router.get("/adminlogin", adminloginpage);
+router.get("/signup", signuppage);
 
 module.exports = router;

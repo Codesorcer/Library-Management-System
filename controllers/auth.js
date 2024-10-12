@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser')
 
 const clientloginfn = async (req, res) => {
     try {
-        // get all data from frontend
+        // get all data from frontend;
         const { email, password } = req.body;
         // validation
         if (!(email && password)) {
