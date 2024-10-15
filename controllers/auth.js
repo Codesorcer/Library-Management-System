@@ -1,10 +1,8 @@
 const pool = require('../models/database');
-const { findUserByEmail , findAdminByEmail} = require('../service/database');
-const express = require('express');
-require('dotenv').config
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const cookieParser = require('cookie-parser')
+const { findUserByEmail, findAdminByEmail } = require('../service/database');
+require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const clientloginfn = async (req, res) => {
     try {
@@ -65,7 +63,7 @@ const adminloginfn = async (req, res) => {
             return res.status(400).send('Send all data');
         }
 
-        // Find user in DB
+        // Find admin in DB
         const admin = await findAdminByEmail(email);
 
         // Match the password
@@ -99,7 +97,7 @@ const adminloginfn = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.status(error.status || 500).send(error.message || 'Internal server error');
+        return res.status(500).send('Internal server error');
     }
 };
 

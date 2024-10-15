@@ -42,4 +42,12 @@ const issuebook = async (req, res) => {
     }
 };
 
+// const promotetoadmin = async (req, res) => {
+//     try {
+//         const { user_id } = req.body;
+//     } catch (error) {
+        
+//     }
+// }
+
 module.exports = {getbooks, issuebook};

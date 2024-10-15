@@ -167,4 +167,40 @@ const pool = mysql.createPool({
 
 // createIssueRequestsTable(); 
 
+// const ensureUniqueEmail = async () => {
+//     const query = 'ALTER TABLE users ADD UNIQUE (email)';
+//     try {
+//         await pool.query(query);
+//         console.log('Unique constraint added to users(email)');
+//     } catch (error) {
+//         console.error('Error ensuring unique email in users:', error);
+//     }
+// };
+
+// ensureUniqueEmail();
+
+// const admin_requests = async () => {
+//     const query = `
+//         CREATE TABLE IF NOT EXISTS admin_request (
+//             request_id INT AUTO_INCREMENT PRIMARY KEY,
+//             user_id INT,
+//             email VARCHAR(100),
+//             request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//             status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+//             admin_response VARCHAR(255),
+//             FOREIGN KEY (user_id) REFERENCES users(user_id),
+//             FOREIGN KEY (email) REFERENCES users(email)
+//         );
+//     `;
+
+//     try {
+//         const [result] = await pool.query(query);
+//         console.log("admin_request table created", result);
+//     } catch (err) {
+//         console.error("Error creating admin_request table:", err);
+//     }
+// };
+
+// admin_requests();
+
 module.exports = pool;
