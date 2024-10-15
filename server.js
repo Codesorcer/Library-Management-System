@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require('dotenv');
 const auth_routes = require('./routes/auth');
 const pages_routes = require('./routes/auth_pages')
+const client_features = require('./routes/client_features')
 const cookieParser = require('cookie-parser');
 
 dotenv.config({ path: './.env' });
@@ -10,7 +11,7 @@ dotenv.config({ path: './.env' });
 const port = process.env.PORT;
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello from Library!</h1>');
+  res.send('<h1>Hello from Library!, Admin Login, Client Login, Signup</h1>');
 });
 
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', auth_routes);
 app.use('/auth', pages_routes);
+app.use('/home', client_features);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
