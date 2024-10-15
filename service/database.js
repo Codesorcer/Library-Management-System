@@ -13,21 +13,21 @@ const findUserByEmail = async (email) => {
     }
 };
 
-const findAdminByEmail = (email) => {
-    return new Promise((resolve, reject) => {
-        pool.query('SELECT * FROM admins WHERE email = ?', [email], (err, results) => {
-            if (err) {
-                return reject({ status: 500, message: 'Error checking admin' });
-            }
+const findAdminByEmail = async (email) => {
+    try {
+        const [results] = await pool.query('SELECT * FROM admins WHERE email = ?', [email]);
 
-            if (results.length === 0) {
-                return reject({ status: 401, message: 'You do not have admin access!!' });
-            }
+        if (results.length === 0) {
+            throw { status: 401, message: 'You do not have admin access!!' };
+        }
 
-            const admin = results[0];
-            resolve(admin);
-        });
-    });
+        return results[0]; // Return the first admin object
+    } catch (err) {
+        if (err.status) {
+            throw err; // Propagate known error
+        }
+        throw { status: 500, message: 'Error checking admin' }; // General error
+    }
 };
 
 
