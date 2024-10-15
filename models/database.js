@@ -1,4 +1,4 @@
-const mysql = require('mysql')
+const mysql = require('mysql2/promise')
 require('dotenv').config();
 const pool = mysql.createPool({
     host: process.env.DATABASE_HOST,
@@ -141,5 +141,30 @@ const pool = mysql.createPool({
 //     }
 //     res.status(200).send('Token column added to admins table successfully');
 // });
+
+// const createIssueRequestsTable = async () => {
+//     const query = `
+//     CREATE TABLE IF NOT EXISTS issue_requests (
+//         issue_id INT AUTO_INCREMENT PRIMARY KEY,
+//         user_id INT,
+//         book_id INT,
+//         request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//         status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+//         admin_response VARCHAR(255),
+//         FOREIGN KEY (user_id) REFERENCES users(user_id),
+//         FOREIGN KEY (book_id) REFERENCES books(book_id)
+//     );
+//     `;
+
+//     pool.query(query, (err, result) => {
+//         if (err) {
+//             console.log("Error creating issue_requests table:", err);
+//         } else {
+//             console.log("issue_requests table created successfully");
+//         }
+//     });
+// };
+
+// createIssueRequestsTable(); 
 
 module.exports = pool;

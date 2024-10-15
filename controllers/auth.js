@@ -8,15 +8,18 @@ const cookieParser = require('cookie-parser')
 
 const clientloginfn = async (req, res) => {
     try {
-        // get all data from frontend;
+        // Get all data from frontend
         const { email, password } = req.body;
-        // validation
+
+        // Validation
         if (!(email && password)) {
-            return res.status(400).send('send all data');
+            return res.status(400).send('Send all data');
         }
-        // find user in DB
+
+        // Find user in DB
         const user = await findUserByEmail(email);
-        // match the password
+
+        // Match the password
         if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
                 { id: user.user_id },
@@ -27,26 +30,21 @@ const clientloginfn = async (req, res) => {
             );
 
             // Update the token in the database
-            pool.query('UPDATE users SET token = ? WHERE user_id = ?', [token, user.user_id], (err, result) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send('Error updating token');
-                }
+            await pool.query('UPDATE users SET token = ? WHERE user_id = ?', [token, user.user_id]);
 
-                user.token = token;
-                user.password = undefined;
+            user.token = token;
+            user.password = undefined; // Remove password from user object
 
-                // send a token
-                const options = {
-                    expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
-                    httpOnly: true
-                };
+            // Send a token
+            const options = {
+                expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days
+                httpOnly: true
+            };
 
-                return res.status(200).cookie("token", token, options).json({
-                    success: true,
-                    token,
-                    user
-                });
+            return res.status(200).cookie("token", token, options).json({
+                success: true,
+                token,
+                user
             });
         } else {
             return res.status(401).send('Invalid email or password');
