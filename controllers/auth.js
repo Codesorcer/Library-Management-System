@@ -20,7 +20,7 @@ const clientloginfn = async (req, res) => {
         // Match the password
         if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
-                { id: user.user_id },
+                { id: user.user_id, email: user.email},
                 process.env.JWT_SECRET,
                 {
                     expiresIn: "2h"
@@ -69,7 +69,7 @@ const adminloginfn = async (req, res) => {
         // Match the password
         if (admin && (await bcrypt.compare(password, admin.password))) {
             const token = jwt.sign(
-                { id: admin.admin_id },
+                { id: admin.admin_id, email: admin.email },
                 process.env.JWT_SECRET,
                 { expiresIn: "2h" }
             );

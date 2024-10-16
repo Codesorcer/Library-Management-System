@@ -1,16 +1,9 @@
 const pool = require('../models/database');
-const { bookavailable, checkPendingIssueRequest, createIssueRequest} = require('../service/database');
+const { bookavailable, checkPendingIssueRequest, createIssueRequest, checkifadmin, checkPendingAdminRequest, createAdminRequest} = require('../service/database');
 
 const getbooks = async (req, res) => {
     try {
-        const books = await new Promise((resolve, reject) => {
-            pool.query('SELECT * FROM books', (err, results) => {
-                if (err) {
-                    return reject(err);
-                }
-                resolve(results);
-            });
-        });
+        const [books] = await pool.query('SELECT * FROM books');    
         res.status(200).json(books);
     } catch (error) {
         console.log(error);
@@ -21,8 +14,8 @@ const getbooks = async (req, res) => {
 // Function to handle the issue book request
 const issuebook = async (req, res) => {
     try {
-        const { user_id, book_id } = req.body;
-
+        const { book_id } = req.body;
+        const user_id = req.user.id
         // Await the results of the async functions
         const isBookAvailable = await bookavailable(book_id);
         const isPendingRequest = await checkPendingIssueRequest(user_id, book_id);
@@ -37,17 +30,33 @@ const issuebook = async (req, res) => {
             return res.status(400).send('Book unavailable');
         }
     } catch (error) {
-        console.log('Error issuing book:', error);
+        console.log('Error Issuing Book:', error);
         return res.status(500).send('Internal Server Error');
     }
 };
 
-// const promotetoadmin = async (req, res) => {
-//     try {
-//         const { user_id } = req.body;
-//     } catch (error) {
-        
-//     }
-// }
+const promotetoadmin = async (req, res) => {
+    try {
+        const user_id = req.user.id;
+        const email = req.user.email;
 
-module.exports = {getbooks, issuebook};
+        const isadmin = await checkifadmin(email);
+        if(isadmin){
+            return res.status(400).send('User Already Admin');
+        } else{
+            const isPendingAdminRequest = await checkPendingAdminRequest(user_id, email);
+            if(isPendingAdminRequest){
+                return res.status(400).send('Pending Request already exists');
+            } else{
+                // Create Admin Request in the Admin Request DB;
+                const request_id = await createAdminRequest(user_id, email);
+                return res.status(200).json({ message: 'Admin Request Submitted Successfully', request_id });
+            }
+        }
+    } catch (error) {
+        console.log('Error Requesting Admin Access:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+}
+
+module.exports = {getbooks, issuebook, promotetoadmin};

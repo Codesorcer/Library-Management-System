@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middlewares/auth')
-const {getbooks, issuebook} = require('../controllers/client_features')
+const {adminauth, clientauth} = require('../middlewares/auth')
+const {getbooks, issuebook, promotetoadmin} = require('../controllers/client_features')
 
-router.get("/", auth, getbooks);
-router.post("/issue", auth, issuebook);
-//router.post("/becomeadmin", auth, promotetoadmin);
+router.get("/", clientauth, getbooks);
+router.post("/issue", clientauth, issuebook);
+router.post("/becomeadmin", clientauth, promotetoadmin);
 
 module.exports = router;

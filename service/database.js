@@ -48,7 +48,6 @@ const bookavailable = async (bookId) => {
     }
 };
 
-// Function to check if a pending issue request exists
 const checkPendingIssueRequest = async (userId, bookId) => {
     try {
         const query = 'SELECT * FROM issue_requests WHERE user_id = ? AND book_id = ? AND status = "pending"';
@@ -61,7 +60,6 @@ const checkPendingIssueRequest = async (userId, bookId) => {
     }
 };
 
-// Function to create an issue request in the database
 const createIssueRequest = async (userId, bookId) => {
     try {
         const query = 'INSERT INTO issue_requests (user_id, book_id) VALUES (?, ?)';
@@ -73,4 +71,44 @@ const createIssueRequest = async (userId, bookId) => {
     }
 };
 
-module.exports = { findUserByEmail , findAdminByEmail, checkPendingIssueRequest, bookavailable, createIssueRequest};
+const checkifadmin = async (email) => {
+    try {
+        const query = 'SELECT email FROM admins WHERE email = ?'
+        const [rows] = await pool.query(query, [email]);
+        
+        if(rows.length > 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    } catch (error) {
+        console.log('Error checking if user already Admin:', error);
+        throw error;
+    }
+}
+
+const checkPendingAdminRequest = async (userID, email) => {
+    try {
+        const query = 'SELECT * FROM admin_request WHERE user_id = ? AND email = ? and status = "pending"';
+        const [rows] = await pool.query(query, [userID, email]);
+
+        return rows.length > 0;
+    } catch (error) {
+        console.log('Error checking pending admin requests:', error);
+        throw error;
+    }
+}
+
+const createAdminRequest = async (userID, email) => {
+    try {
+        const query = 'INSERT INTO admin_request (user_id, email) VALUES (?, ?)';
+        const [result] = await pool.query(query, [userID, email]);
+        return result.insertId;
+    } catch (error) {
+        console.log('Error creating admin request:', error);
+        throw error;
+    }
+}
+
+module.exports = { findUserByEmail , findAdminByEmail, checkPendingIssueRequest, bookavailable, createIssueRequest, checkifadmin, checkPendingAdminRequest, createAdminRequest};

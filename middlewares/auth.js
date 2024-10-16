@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
 require('dotenv').config
 
-const auth = (req, res, next) => {
+const clientauth = (req, res, next) => {
     try {
         let token = req.headers.cookie
+//        console.log(req.headers);
         if(token){
-            token = token.substring(6);
-            let user = jwt.verify(token, process.env.JWT_SECRET)
-            req.userID = user.id;
+            token = token.split('=')[1];
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = { id: decoded.id, email: decoded.email};
         }
         else{
             res.status(401).json({message: "Unauthorized User"});
@@ -18,5 +19,12 @@ const auth = (req, res, next) => {
         res.status(401).json({message: "Unauthorized User"});
     }
 }
+const adminauth = (req, res, next) => {
+    try {
+        
+    } catch (error) {
+        
+    }
+}
 
-module.exports = auth;
+module.exports = {adminauth, clientauth};
