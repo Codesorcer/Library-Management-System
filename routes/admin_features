@@ -1,3 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const {adminauth, clientauth} = require('../middlewares/auth')
+const {get_issue_requests, bookrequest_action, get_admin_requests, adminrequest_action} = require('../controllers/admin_features');
+
+router.get("/issuerequests", adminauth, get_issue_requests);
+// on /issuerequests/:issue_id, give options to approve/reject;
+router.post("/issuerequests/:issue_id/:action", adminauth, bookrequest_action);
+
+router.get("/adminrequests", adminauth, get_admin_requests);
+// on /adminrequests/:request_id, give options to approve/reject;
+router.post("/adminrequests/:request_id/:action", adminauth, adminrequest_action);
+
+module.exports = router;

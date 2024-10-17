@@ -20,9 +20,13 @@ const issuebook = async (req, res) => {
         const isBookAvailable = await bookavailable(book_id);
         const isPendingRequest = await checkPendingIssueRequest(user_id, book_id);
 
+        // also add that if user has issued that book and not returned that book then he cannot again request same book check
+
         if (isBookAvailable && !isPendingRequest) {
             // Create the issue request in the database
             const requestId = await createIssueRequest(user_id, book_id);
+            const [book] = await pool.query('SELECT * FROM books WHERE book_id = ?', [book_id]);
+            await pool.query('UPDATE books SET quantity= ? where book_id = ?', [book[0].quantity-1 , book_id]);
             return res.status(201).json({ message: 'Issue request submitted successfully', requestId });
         } else if (isPendingRequest) {
             return res.status(400).send('Pending request already exists for this book');
