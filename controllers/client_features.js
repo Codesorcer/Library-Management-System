@@ -63,4 +63,15 @@ const promotetoadmin = async (req, res) => {
     }
 }
 
-module.exports = {getbooks, issuebook, promotetoadmin};
+const history = async (req, res) => {
+    try {
+        const user_id = req.user.id;
+        const [my_books] = await pool.query('SELECT * FROM issue_requests WHERE user_id = ?', [user_id]);
+        res.status(200).json(my_books);
+    } catch (error) {
+        console.log('Error in viewing history:', error);
+        res.status(500).send('Internal Server Error');
+    }
+}
+
+module.exports = {getbooks, issuebook, promotetoadmin, history};
