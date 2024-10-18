@@ -118,4 +118,35 @@ const adminrequest_action = async (req, res) => {
     }
 }
 
-module.exports = {get_issue_requests, bookrequest_action, get_admin_requests, adminrequest_action};
+const add_new_book = async (req, res) => {
+    const {book_name, author, field_of_study, pages, book_quantity} = req.body;
+
+    // if book already exists then increase its quantity
+    const [avail_books] = await pool.query('SELECT * FROM books WHERE book_name = ? & author = ?', [book_name, author]);
+    if(avail_books.length > 0){
+        const quant = avail_books[0].quantity + book_quantity;
+        await pool.query('UPDATE books SET quantity = ? WHERE book_id = ?', [quant, avail_books[0].book_id]);
+        return res.status(200).send('Book Quantity Updated');
+    }
+    else{
+        // if book not in db then add it in db
+        await pool.query('INSERT INTO books (book_name, author, field_of_study, pages, quantity) VALUES (?, ?, ?, ?, ?)', [book_name, author, field_of_study, pages, book_quantity]);
+        return res.status(200).send('Book added to Library');
+    }
+}
+
+const remove_book = async (req, res) => {
+    const {book_id} = req.params.bookid;
+
+    // if book not available
+    const [avail_books]= await pool.query('SELECT * FROM books WHERE book_id = ?', [book_id]);
+    if(avail_books.length == 0){
+        return res.status(200).send('Book not in Library');
+    }
+    else{
+        await pool.query('DELETE FROM books WHERE book_id = ?', [book_id]);
+        return res.status(200).send('Book Removed!!');
+    }
+}
+
+module.exports = {get_issue_requests, bookrequest_action, get_admin_requests, adminrequest_action, add_new_book, remove_book};

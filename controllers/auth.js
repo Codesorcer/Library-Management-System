@@ -142,7 +142,7 @@ const signupfn = async (req, res) => {
         // Set the token in the response cookies
         res.cookie('token', token, { httpOnly: true });
 
-        // Send user data excluding the password
+        // Send user data excluding the password and create the users book issue table
         const user = { id: userID, name, email, mobile, address, user_type, token };
         res.status(201).json(user);
     } catch (error) {
